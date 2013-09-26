@@ -24,7 +24,10 @@ from PySide import QtCore, QtGui
 from mountpoints.workflowstep import WorkflowStepMountPoint
 
 from fieldworkmodelsourcestep.widgets.configuredialog import ConfigureDialog
-from fieldworkmodelsourcestep.fieldworkmodeldata import fieldworkmodeldata
+from fieldworkmodelsourcestep.fieldworkmodeldata import FieldworkModelData
+
+import sys
+sys.path.append('../../../../')
 
 class FieldworkModelSourceStep(WorkflowStepMountPoint):
     '''
@@ -33,10 +36,10 @@ class FieldworkModelSourceStep(WorkflowStepMountPoint):
     '''
     
     def __init__(self, location):
-        super(Fieldworkmodelsourcestep, self).__init__('Fieldwork Model Source', location)
+        super(FieldworkModelSourceStep, self).__init__('Fieldwork Model Source', location)
         self._state = FieldworkModelData()
-        self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'http://physiomeproject.org/workflow/1.0/rdf-schema#zincmodel'))
+        self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')   # change this
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkmodel'))
         
     def configure(self):
         d = ConfigureDialog(self._state)
@@ -78,7 +81,11 @@ class FieldworkModelSourceStep(WorkflowStepMountPoint):
         self._configured = d.validate()
         
     def portOutput(self):
-        return self._state
+        geometricField = fieldwork.geometric_field.load_geometric_field(self._state._geometricFieldLocation,
+                                                                        self._state._ensembleLocation,
+                                                                        self._state._meshLocation,
+                                                                        )
+        return geometricField
      
 def getConfigFilename(identifier):
     return identifier + '.conf'

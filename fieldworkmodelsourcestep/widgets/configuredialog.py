@@ -81,7 +81,19 @@ class ConfigureDialog(QDialog):
         else:
             self._ui.geometricFieldLineEdit.setStyleSheet(REQUIRED_STYLE_SHEET)
 
-        valid = identifier_valid and geometricField_valid
+        ensemble_valid = len(self._ui.ensembleLineEdit.text()) > 0
+        if ensemble_valid:
+            self._ui.ensembleLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
+        else:
+            self._ui.ensembleLineEdit.setStyleSheet(REQUIRED_STYLE_SHEET)
+
+        mesh_valid = len(self._ui.meshLineEdit.text()) > 0
+        if mesh_valid:
+            self._ui.meshLineEdit.setStyleSheet(DEFAULT_STYLE_SHEET)
+        else:
+            self._ui.meshLineEdit.setStyleSheet(REQUIRED_STYLE_SHEET)
+
+        valid = identifier_valid and geometricField_valid and ensemble_valid and mesh_valid
         self._ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid)
 
         return valid
